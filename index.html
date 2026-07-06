@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scrollery — 本地优先的照片长卷 · Your photos, unrolled</title>
+<meta name="description" content="Scrollery:本地优先的高性能照片管理工具,为数十万张照片而生。A local-first, high-performance photo library for Windows.">
+<link rel="canonical" href="https://scrollery.app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Scrollery">
+<meta property="og:description" content="本地优先的高性能照片管理工具,为数十万张照片而生。A local-first, high-performance photo library for Windows.">
+<meta property="og:url" content="https://scrollery.app/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c3402b'/%3E%3Ctext x='32' y='46' font-size='38' text-anchor='middle' fill='%23fff' font-family='serif'%3E%E5%8D%B7%3C/text%3E%3C/svg%3E">
+<script>
+/* 首帧前恢复主题与语言偏好,避免闪变(FOUC)。默认语言跟随浏览器。 */
+(function () {
+  try {
+    var t = localStorage.getItem("scrollery-theme");
+    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    var l = localStorage.getItem("scrollery-lang");
+    if (l !== "zh" && l !== "en") {
+      l = (navigator.language || "").toLowerCase().indexOf("zh") === 0 ? "zh" : "en";
+    }
+    document.documentElement.dataset.lang = l;
+    document.documentElement.lang = l === "zh" ? "zh-CN" : "en";
+  } catch (e) { /* 无 localStorage 时保持默认 */ }
+})();
+</script>
+<style>
+/* ── 主题变量:纸(亮)/ 墨(暗),朱砂为强调色 ─────────────────────── */
+:root {
+  --bg: #f6f2e9;
+  --surface: #fffdf7;
+  --surface-2: #f0eadd;
+  --text: #2b2622;
+  --muted: #6f665c;
+  --accent: #c3402b;
+  --accent-ink: #a03421;
+  --line: #e2d9c8;
+  --roller: #4a3f35;
+  --shadow: 0 10px 30px rgba(60, 45, 25, .12);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171310;
+    --surface: #211b16;
+    --surface-2: #2a231c;
+    --text: #ece5da;
+    --muted: #a49a8b;
+    --accent: #e05a3a;
+    --accent-ink: #f07b5c;
+    --line: #383026;
+    --roller: #0e0b09;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .45);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171310;
+  --surface: #211b16;
+  --surface-2: #2a231c;
+  --text: #ece5da;
+  --muted: #a49a8b;
+  --accent: #e05a3a;
+  --accent-ink: #f07b5c;
+  --line: #383026;
+  --roller: #0e0b09;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .45);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+.serif { font-family: "Palatino Linotype", Palatino, Georgia, "Songti SC", "SimSun", serif; }
+
+/* 语言切换:整页双语共存,按根节点 data-lang 显隐 */
+html[data-lang="zh"] [lang="en"] { display: none !important; }
+html[data-lang="en"] [lang="zh-CN"] { display: none !important; }
+
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+/* ── 顶栏 ─────────────────────────────────────────────────────── */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 0;
+}
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); }
+.seal {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: var(--accent); color: #fff;
+  display: grid; place-items: center;
+  font-size: 20px; line-height: 1;
+}
+.brand b { font-size: 20px; letter-spacing: .02em; }
+.controls { display: flex; gap: 8px; }
+.ctl {
+  border: 1px solid var(--line); background: var(--surface);
+  color: var(--text); border-radius: 8px;
+  padding: 6px 12px; font-size: 13px; cursor: pointer;
+}
+.ctl:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Hero ─────────────────────────────────────────────────────── */
+.hero { padding: 64px 0 24px; text-align: center; }
+.hero h1 {
+  font-size: clamp(44px, 8vw, 76px);
+  letter-spacing: .01em; line-height: 1.1;
+}
+.hero h1 .dot { color: var(--accent); }
+.tagline { font-size: clamp(19px, 3vw, 26px); margin-top: 14px; color: var(--text); }
+.sub { max-width: 640px; margin: 14px auto 0; color: var(--muted); font-size: 16px; }
+.badges { margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.badge {
+  font-size: 13px; padding: 5px 12px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+}
+.badge.hot { border-color: var(--accent); color: var(--accent); }
+.ctas { margin-top: 28px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-block; text-decoration: none; border-radius: 10px;
+  padding: 12px 26px; font-size: 15px; font-weight: 600;
+  transition: transform .12s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn.primary { background: var(--accent); color: #fff; box-shadow: var(--shadow); }
+.btn.ghost { border: 1px solid var(--line); color: var(--text); background: var(--surface); }
+.btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── 长卷装饰:两轴一纸,抽象色块作画心(非产品截图) ─────────────── */
+.scroll-art { display: flex; align-items: stretch; gap: 0; margin: 56px auto 8px; max-width: 920px; padding: 0 12px; }
+.roller {
+  width: 18px; border-radius: 9px; flex: none;
+  background: linear-gradient(90deg, var(--roller), color-mix(in srgb, var(--roller) 60%, #fff 12%), var(--roller));
+  box-shadow: var(--shadow);
+}
+.paper {
+  flex: 1; overflow: hidden; padding: 14px 0;
+  background: var(--surface);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.frames { display: flex; gap: 10px; width: max-content; animation: unroll 36s linear infinite; }
+.frame { width: 96px; height: 68px; border-radius: 6px; flex: none; }
+/* 抽象「照片」:八色温渐变,循环两份实现无缝滚动 */
+.f1 { background: linear-gradient(135deg, #e8b26a, #c3402b); }
+.f2 { background: linear-gradient(135deg, #7fa8c9, #2b4d6f); }
+.f3 { background: linear-gradient(135deg, #a6c48a, #4a6741); }
+.f4 { background: linear-gradient(135deg, #d9c2a7, #8a6a4f); }
+.f5 { background: linear-gradient(135deg, #c9a0b8, #6f3b5c); }
+.f6 { background: linear-gradient(135deg, #f0d9a0, #b98a3a); }
+.f7 { background: linear-gradient(135deg, #9fb8ad, #3c5c52); }
+.f8 { background: linear-gradient(135deg, #b8b8d1, #4a4a7a); }
+@keyframes unroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .frames { animation: none; } }
+
+/* ── 特性 ─────────────────────────────────────────────────────── */
+section.features { padding: 56px 0 8px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 22px 22px 20px;
+}
+.card .ico { font-size: 22px; color: var(--accent); }
+.card h3 { font-size: 17px; margin: 10px 0 6px; }
+.card p { font-size: 14.5px; color: var(--muted); }
+
+/* ── 路线图 & 诚实脚注 ────────────────────────────────────────── */
+.roadmap {
+  margin: 48px 0 0; padding: 26px 28px;
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px;
+  font-size: 15px;
+}
+.roadmap b { color: var(--accent-ink); }
+.hedge { margin-top: 10px; font-size: 13px; color: var(--muted); }
+
+/* ── 页脚 ─────────────────────────────────────────────────────── */
+footer {
+  margin-top: 72px; padding: 28px 0 40px;
+  border-top: 1px solid var(--line);
+  font-size: 14px; color: var(--muted);
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/">
+    <span class="seal serif" aria-hidden="true">卷</span>
+    <b class="serif">Scrollery</b>
+  </a>
+  <nav class="controls" aria-label="Preferences">
+    <button class="ctl" id="langBtn" type="button">EN</button>
+    <button class="ctl" id="themeBtn" type="button" aria-label="Toggle theme">◐</button>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <h1 class="serif">Scrollery<span class="dot">.</span></h1>
+
+    <p class="tagline serif" lang="zh-CN">铺开你的画卷</p>
+    <p class="tagline serif" lang="en">Your photo library, unrolled.</p>
+
+    <p class="sub" lang="zh-CN">本地优先的高性能照片管理工具。数十万张照片,如长卷般顺滑铺开——而每一张都留在你自己的硬盘上。</p>
+    <p class="sub" lang="en">A local-first, high-performance photo library. Glide through hundreds of thousands of photos like unrolling a handscroll — every one of them staying on your own drive.</p>
+
+    <div class="badges">
+      <span class="badge hot" lang="zh-CN">Windows 内测进行中</span>
+      <span class="badge hot" lang="en">Private beta on Windows</span>
+      <span class="badge" lang="zh-CN">macOS 在路线图上</span>
+      <span class="badge" lang="en">macOS on the roadmap</span>
+    </div>
+
+    <div class="ctas">
+      <a class="btn primary" href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a>
+      <a class="btn ghost" href="mailto:contact@scrollery.app" lang="zh-CN">联系我们</a>
+      <a class="btn ghost" href="mailto:contact@scrollery.app" lang="en">Contact us</a>
+    </div>
+  </section>
+
+  <div class="scroll-art" aria-hidden="true">
+    <div class="roller"></div>
+    <div class="paper">
+      <div class="frames">
+        <div class="frame f1"></div><div class="frame f2"></div><div class="frame f3"></div><div class="frame f4"></div>
+        <div class="frame f5"></div><div class="frame f6"></div><div class="frame f7"></div><div class="frame f8"></div>
+        <div class="frame f3"></div><div class="frame f6"></div><div class="frame f1"></div><div class="frame f8"></div>
+        <div class="frame f1"></div><div class="frame f2"></div><div class="frame f3"></div><div class="frame f4"></div>
+        <div class="frame f5"></div><div class="frame f6"></div><div class="frame f7"></div><div class="frame f8"></div>
+        <div class="frame f3"></div><div class="frame f6"></div><div class="frame f1"></div><div class="frame f8"></div>
+      </div>
+    </div>
+    <div class="roller"></div>
+  </div>
+
+  <section class="features">
+    <div class="grid">
+      <div class="card">
+        <div class="ico" aria-hidden="true">⌂</div>
+        <h3 lang="zh-CN">本地优先</h3>
+        <h3 lang="en">Local-first</h3>
+        <p lang="zh-CN">照片与索引都存在你的设备上,不强制上传、没有云订阅。离线也能正常使用。</p>
+        <p lang="en">Photos and their index live on your device. No forced uploads, no cloud subscription. Works offline.</p>
+      </div>
+      <div class="card">
+        <div class="ico" aria-hidden="true">⚡</div>
+        <h3 lang="zh-CN">为海量图库而生</h3>
+        <h3 lang="en">Built for big libraries</h3>
+        <p lang="zh-CN">虚拟滚动与多级缩略图管线,数十万张照片的图库依然顺滑流畅。</p>
+        <p lang="en">Virtualized scrolling and a multi-tier thumbnail pipeline keep libraries of hundreds of thousands of photos smooth.</p>
+      </div>
+      <div class="card">
+        <div class="ico" aria-hidden="true">✦</div>
+        <h3 lang="zh-CN">本地 AI</h3>
+        <h3 lang="en">On-device AI</h3>
+        <p lang="zh-CN">自然语言搜索与人脸检测,模型全部在本机离线运行,数据不出门。</p>
+        <p lang="en">Natural-language search and face detection run entirely on your machine — your data never leaves it.</p>
+      </div>
+      <div class="card">
+        <div class="ico" aria-hidden="true">▣</div>
+        <h3 lang="zh-CN">原地管理</h3>
+        <h3 lang="en">Manage in place</h3>
+        <p lang="zh-CN">直接管理你现有的文件夹,不搬动、不改名、不锁进私有库。你的文件始终是你的文件。</p>
+        <p lang="en">Works with the folders you already have — no moving, no renaming, no proprietary vault. Your files stay your files.</p>
+      </div>
+      <div class="card">
+        <div class="ico" aria-hidden="true">◫</div>
+        <h3 lang="zh-CN">插件化格式</h3>
+        <h3 lang="en">Pluggable formats</h3>
+        <p lang="zh-CN">通过签名插件扩展专业格式支持(如 PSD),核心保持轻快。</p>
+        <p lang="en">Signed plugins extend support for professional formats (such as PSD) while the core stays lean.</p>
+      </div>
+      <div class="card">
+        <div class="ico" aria-hidden="true">◇</div>
+        <h3 lang="zh-CN">代码公开</h3>
+        <h3 lang="en">Source available</h3>
+        <p lang="zh-CN">核心代码公开于 GitHub,构建过程可查验,欢迎围观与反馈。</p>
+        <p lang="en">The core source is public on GitHub — inspectable builds, feedback welcome.</p>
+      </div>
+    </div>
+
+    <div class="roadmap">
+      <p lang="zh-CN"><b>现状:</b>Windows 版内测进行中;macOS 版本随后;移动端在更远的路线图上。</p>
+      <p lang="en"><b>Status:</b> the Windows build is in private beta; macOS comes next; mobile is further down the roadmap.</p>
+      <p class="hedge" lang="zh-CN">产品处于内测阶段,本页信息以正式发布为准。</p>
+      <p class="hedge" lang="en">Scrollery is in private beta; details on this page may change before release.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>© 2026 Scrollery</span>
+  <span>
+    <a href="mailto:contact@scrollery.app">contact@scrollery.app</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a>
+  </span>
+</footer>
+
+</div>
+
+<script>
+/* 主题与语言切换:写 localStorage,根节点属性驱动 CSS(无框架、无跟踪脚本) */
+(function () {
+  var root = document.documentElement;
+
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var dark = root.dataset.theme === "dark" ||
+      (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+    var next = dark ? "light" : "dark";
+    root.dataset.theme = next;
+    try { localStorage.setItem("scrollery-theme", next); } catch (e) {}
+  });
+
+  var langBtn = document.getElementById("langBtn");
+  function paintLangBtn() { langBtn.textContent = root.dataset.lang === "zh" ? "EN" : "中文"; }
+  langBtn.addEventListener("click", function () {
+    var next = root.dataset.lang === "zh" ? "en" : "zh";
+    root.dataset.lang = next;
+    root.lang = next === "zh" ? "zh-CN" : "en";
+    try { localStorage.setItem("scrollery-lang", next); } catch (e) {}
+    paintLangBtn();
+  });
+  paintLangBtn();
+})();
+</script>
+</body>
+</html>
