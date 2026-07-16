@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>icon source — headless Edge 按窗口尺寸截 icon-512/192 与 apple-touch-icon</title>
+<style>
+  /* 透明底截图给 icon-512/192(圆角外透明);apple-touch 用 --default-background-color=C3402BFF 满幅 */
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 100vw; height: 100vh; background: transparent; overflow: hidden; }
+  .seal {
+    width: 100vmin; height: 100vmin; position: relative;
+    background: #c3402b; border-radius: 22vmin;
+    display: grid; place-items: center;
+  }
+  .seal::after {
+    content: ""; position: absolute; inset: 7vmin;
+    border: 2.8vmin solid rgba(255, 255, 255, .28); border-radius: 15vmin;
+  }
+  .seal span {
+    font-family: KaiTi, STKaiti, "Songti SC", SimSun, serif;
+    font-size: 52vmin; color: #fff; transform: translateY(-2.5vmin);
+  }
+</style>
+</head>
+<body>
+  <div class="seal"><span>卷</span></div>
+</body>
+</html>

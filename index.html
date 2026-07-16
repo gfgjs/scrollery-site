@@ -3,336 +3,527 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Scrollery — 本地优先的照片长卷 · Your photos, unrolled</title>
-<meta name="description" content="Scrollery:本地优先的高性能照片管理工具,为数十万张照片而生。A local-first, high-performance photo library for Windows.">
+<title>Scrollery 画卷 — 本地优先的四媒体资源库 · A local-first media library</title>
+<meta name="description" content="Scrollery(画卷):本地优先、完全离线的四媒体管理器——照片、视频、文档、音频。数十万张流畅画廊 + 本机 AI 语义搜索。A local-first, fully offline library for photos, videos, documents & audio.">
 <link rel="canonical" href="https://scrollery.app/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Scrollery">
-<meta property="og:description" content="本地优先的高性能照片管理工具,为数十万张照片而生。A local-first, high-performance photo library for Windows.">
+<meta property="og:site_name" content="Scrollery">
+<meta property="og:title" content="Scrollery 画卷 — 铺开你的画卷">
+<meta property="og:description" content="本地优先、完全离线的四媒体资源库。数十万张照片,如长卷般顺滑铺开。A local-first, fully offline media library — your photos, unrolled.">
 <meta property="og:url" content="https://scrollery.app/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c3402b'/%3E%3Ctext x='32' y='46' font-size='38' text-anchor='middle' fill='%23fff' font-family='serif'%3E%E5%8D%B7%3C/text%3E%3C/svg%3E">
-<script>
-/* 首帧前恢复主题与语言偏好,避免闪变(FOUC)。默认语言跟随浏览器。 */
-(function () {
-  try {
-    var t = localStorage.getItem("scrollery-theme");
-    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
-    var l = localStorage.getItem("scrollery-lang");
-    if (l !== "zh" && l !== "en") {
-      l = (navigator.language || "").toLowerCase().indexOf("zh") === 0 ? "zh" : "en";
+<meta property="og:image" content="https://scrollery.app/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f6f2e9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171310" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/boot.js"></script>
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Scrollery",
+      "alternateName": "画卷",
+      "operatingSystem": "Windows 10, Windows 11",
+      "applicationCategory": "MultimediaApplication",
+      "description": "本地优先、完全离线的四媒体资源管理器:照片、视频、文档、音频。A local-first, fully offline media asset manager for photos, videos, documents and audio.",
+      "url": "https://scrollery.app/",
+      "image": "https://scrollery.app/assets/og.png",
+      "sameAs": ["https://github.com/gfgjs/scrollery"]
+    },
+    {
+      "@type": "WebSite",
+      "name": "Scrollery",
+      "url": "https://scrollery.app/",
+      "inLanguage": ["zh-CN", "en"]
     }
-    document.documentElement.dataset.lang = l;
-    document.documentElement.lang = l === "zh" ? "zh-CN" : "en";
-  } catch (e) { /* 无 localStorage 时保持默认 */ }
-})();
+  ]
+}
 </script>
-<style>
-/* ── 主题变量:纸(亮)/ 墨(暗),朱砂为强调色 ─────────────────────── */
-:root {
-  --bg: #f6f2e9;
-  --surface: #fffdf7;
-  --surface-2: #f0eadd;
-  --text: #2b2622;
-  --muted: #6f665c;
-  --accent: #c3402b;
-  --accent-ink: #a03421;
-  --line: #e2d9c8;
-  --roller: #4a3f35;
-  --shadow: 0 10px 30px rgba(60, 45, 25, .12);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #171310;
-    --surface: #211b16;
-    --surface-2: #2a231c;
-    --text: #ece5da;
-    --muted: #a49a8b;
-    --accent: #e05a3a;
-    --accent-ink: #f07b5c;
-    --line: #383026;
-    --roller: #0e0b09;
-    --shadow: 0 10px 30px rgba(0, 0, 0, .45);
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #171310;
-  --surface: #211b16;
-  --surface-2: #2a231c;
-  --text: #ece5da;
-  --muted: #a49a8b;
-  --accent: #e05a3a;
-  --accent-ink: #f07b5c;
-  --line: #383026;
-  --roller: #0e0b09;
-  --shadow: 0 10px 30px rgba(0, 0, 0, .45);
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: "Segoe UI", system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-}
-.serif { font-family: "Palatino Linotype", Palatino, Georgia, "Songti SC", "SimSun", serif; }
-
-/* 语言切换:整页双语共存,按根节点 data-lang 显隐 */
-html[data-lang="zh"] [lang="en"] { display: none !important; }
-html[data-lang="en"] [lang="zh-CN"] { display: none !important; }
-
-.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
-
-/* ── 顶栏 ─────────────────────────────────────────────────────── */
-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 0;
-}
-.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); }
-.seal {
-  width: 34px; height: 34px; border-radius: 8px;
-  background: var(--accent); color: #fff;
-  display: grid; place-items: center;
-  font-size: 20px; line-height: 1;
-}
-.brand b { font-size: 20px; letter-spacing: .02em; }
-.controls { display: flex; gap: 8px; }
-.ctl {
-  border: 1px solid var(--line); background: var(--surface);
-  color: var(--text); border-radius: 8px;
-  padding: 6px 12px; font-size: 13px; cursor: pointer;
-}
-.ctl:hover { border-color: var(--accent); color: var(--accent); }
-
-/* ── Hero ─────────────────────────────────────────────────────── */
-.hero { padding: 64px 0 24px; text-align: center; }
-.hero h1 {
-  font-size: clamp(44px, 8vw, 76px);
-  letter-spacing: .01em; line-height: 1.1;
-}
-.hero h1 .dot { color: var(--accent); }
-.tagline { font-size: clamp(19px, 3vw, 26px); margin-top: 14px; color: var(--text); }
-.sub { max-width: 640px; margin: 14px auto 0; color: var(--muted); font-size: 16px; }
-.badges { margin-top: 22px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.badge {
-  font-size: 13px; padding: 5px 12px; border-radius: 999px;
-  border: 1px solid var(--line); background: var(--surface); color: var(--muted);
-}
-.badge.hot { border-color: var(--accent); color: var(--accent); }
-.ctas { margin-top: 28px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-.btn {
-  display: inline-block; text-decoration: none; border-radius: 10px;
-  padding: 12px 26px; font-size: 15px; font-weight: 600;
-  transition: transform .12s ease;
-}
-.btn:hover { transform: translateY(-1px); }
-.btn.primary { background: var(--accent); color: #fff; box-shadow: var(--shadow); }
-.btn.ghost { border: 1px solid var(--line); color: var(--text); background: var(--surface); }
-.btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
-
-/* ── 长卷装饰:两轴一纸,抽象色块作画心(非产品截图) ─────────────── */
-.scroll-art { display: flex; align-items: stretch; gap: 0; margin: 56px auto 8px; max-width: 920px; padding: 0 12px; }
-.roller {
-  width: 18px; border-radius: 9px; flex: none;
-  background: linear-gradient(90deg, var(--roller), color-mix(in srgb, var(--roller) 60%, #fff 12%), var(--roller));
-  box-shadow: var(--shadow);
-}
-.paper {
-  flex: 1; overflow: hidden; padding: 14px 0;
-  background: var(--surface);
-  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-.frames { display: flex; gap: 10px; width: max-content; animation: unroll 36s linear infinite; }
-.frame { width: 96px; height: 68px; border-radius: 6px; flex: none; }
-/* 抽象「照片」:八色温渐变,循环两份实现无缝滚动 */
-.f1 { background: linear-gradient(135deg, #e8b26a, #c3402b); }
-.f2 { background: linear-gradient(135deg, #7fa8c9, #2b4d6f); }
-.f3 { background: linear-gradient(135deg, #a6c48a, #4a6741); }
-.f4 { background: linear-gradient(135deg, #d9c2a7, #8a6a4f); }
-.f5 { background: linear-gradient(135deg, #c9a0b8, #6f3b5c); }
-.f6 { background: linear-gradient(135deg, #f0d9a0, #b98a3a); }
-.f7 { background: linear-gradient(135deg, #9fb8ad, #3c5c52); }
-.f8 { background: linear-gradient(135deg, #b8b8d1, #4a4a7a); }
-@keyframes unroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .frames { animation: none; } }
-
-/* ── 特性 ─────────────────────────────────────────────────────── */
-section.features { padding: 56px 0 8px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
-.card {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
-  padding: 22px 22px 20px;
-}
-.card .ico { font-size: 22px; color: var(--accent); }
-.card h3 { font-size: 17px; margin: 10px 0 6px; }
-.card p { font-size: 14.5px; color: var(--muted); }
-
-/* ── 路线图 & 诚实脚注 ────────────────────────────────────────── */
-.roadmap {
-  margin: 48px 0 0; padding: 26px 28px;
-  background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px;
-  font-size: 15px;
-}
-.roadmap b { color: var(--accent-ink); }
-.hedge { margin-top: 10px; font-size: 13px; color: var(--muted); }
-
-/* ── 页脚 ─────────────────────────────────────────────────────── */
-footer {
-  margin-top: 72px; padding: 28px 0 40px;
-  border-top: 1px solid var(--line);
-  font-size: 14px; color: var(--muted);
-  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-}
-footer a { color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--accent); }
-</style>
 </head>
 <body>
-<div class="wrap">
 
-<header>
-  <a class="brand" href="/">
-    <span class="seal serif" aria-hidden="true">卷</span>
-    <b class="serif">Scrollery</b>
-  </a>
-  <nav class="controls" aria-label="Preferences">
-    <button class="ctl" id="langBtn" type="button">EN</button>
-    <button class="ctl" id="themeBtn" type="button" aria-label="Toggle theme">◐</button>
-  </nav>
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="/">
+      <span class="seal-mini" aria-hidden="true">卷</span>
+      <span class="brand-name">Scrollery</span>
+    </a>
+    <nav class="head-nav" aria-label="站点导航 Site">
+      <a href="/#features"><span lang="zh-CN">特性</span><span lang="en">Features</span></a>
+      <a href="/#themes"><span lang="zh-CN">主题</span><span lang="en">Themes</span></a>
+      <a href="/#tech"><span lang="zh-CN">技术</span><span lang="en">Under the hood</span></a>
+      <a href="/#join"><span lang="zh-CN">内测</span><span lang="en">Beta</span></a>
+      <a href="/faq">FAQ</a>
+    </nav>
+    <div class="controls">
+      <button class="ctl" id="langBtn" type="button">EN</button>
+      <button class="ctl" id="themeBtn" type="button" aria-label="切换明暗主题 Toggle theme">◐</button>
+    </div>
+  </div>
 </header>
 
 <main>
+
+  <!-- ── 引首 ── -->
   <section class="hero">
-    <h1 class="serif">Scrollery<span class="dot">.</span></h1>
+    <div class="wrap">
+      <p class="hero-eyebrow"><span lang="zh-CN">本地优先 · 四媒体资源库</span><span lang="en">Local-first · Four-media library</span></p>
+      <h1 class="hero-title">Scrollery<span class="tdot">.</span></h1>
 
-    <p class="tagline serif" lang="zh-CN">铺开你的画卷</p>
-    <p class="tagline serif" lang="en">Your photo library, unrolled.</p>
+      <p class="tagline" lang="zh-CN">铺开你的画卷</p>
+      <p class="tagline" lang="en">Your photo library, unrolled.</p>
 
-    <p class="sub" lang="zh-CN">本地优先的高性能照片管理工具。数十万张照片,如长卷般顺滑铺开——而每一张都留在你自己的硬盘上。</p>
-    <p class="sub" lang="en">A local-first, high-performance photo library. Glide through hundreds of thousands of photos like unrolling a handscroll — every one of them staying on your own drive.</p>
+      <p class="sub" lang="zh-CN">照片、视频、文档、音频,收在同一幅长卷里。数十万张顺滑铺开,本机 AI 一句话找到——而每一个文件,都留在你自己的硬盘上。</p>
+      <p class="sub" lang="en">Photos, videos, documents and audio on one long scroll. Hundreds of thousands of items glide by; on-device AI finds any of them from a sentence — and every file stays on your own drive.</p>
 
-    <div class="badges">
-      <span class="badge hot" lang="zh-CN">Windows 内测进行中</span>
-      <span class="badge hot" lang="en">Private beta on Windows</span>
-      <span class="badge" lang="zh-CN">macOS 在路线图上</span>
-      <span class="badge" lang="en">macOS on the roadmap</span>
+      <div class="badges">
+        <span class="badge hot" lang="zh-CN">Windows 内测进行中</span>
+        <span class="badge hot" lang="en">Private beta on Windows</span>
+        <span class="badge" lang="zh-CN">完全离线 · 零上云</span>
+        <span class="badge" lang="en">Fully offline · nothing uploaded</span>
+        <span class="badge" lang="zh-CN">核心开源 · Apache-2.0</span>
+        <span class="badge" lang="en">Open core · Apache-2.0</span>
+      </div>
+
+      <div class="ctas">
+        <a class="btn primary" href="mailto:contact@scrollery.app?subject=Scrollery%20%E5%86%85%E6%B5%8B%E7%94%B3%E8%AF%B7%20%2F%20Beta%20request"><span lang="zh-CN">加入内测</span><span lang="en">Join the beta</span></a>
+        <a class="btn ghost" href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a>
+      </div>
     </div>
+    <aside class="colophon" aria-hidden="true">
+      <span>本地优先 · 完全离线 · 如展手卷</span>
+      <span class="seal-mini seal-stamp">卷</span>
+    </aside>
+  </section>
 
-    <div class="ctas">
-      <a class="btn primary" href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a>
-      <a class="btn ghost" href="mailto:contact@scrollery.app" lang="zh-CN">联系我们</a>
-      <a class="btn ghost" href="mailto:contact@scrollery.app" lang="en">Contact us</a>
+  <!-- ── 画心:界面实拍 ── -->
+  <figure class="scrollframe">
+    <div class="scrollframe-row">
+      <div class="roller" aria-hidden="true"></div>
+      <div class="paper-shot">
+        <img src="/assets/shots/hero-gallery-ink.webp" alt="Scrollery 画廊界面(墨主题,示例图库)/ Scrollery gallery view, Ink theme, sample library" width="1440" height="900" fetchpriority="high">
+      </div>
+      <div class="roller" aria-hidden="true"></div>
+    </div>
+    <figcaption class="shot-note">
+      <span lang="zh-CN">界面实拍 · 示例图库(缩略图为占位示意)</span>
+      <span lang="en">Actual UI · sample library (placeholder thumbnails)</span>
+    </figcaption>
+  </figure>
+
+  <!-- ── 展卷:滚动驱动的手卷四景 ── -->
+  <section class="unroll" aria-label="手卷四景 Four scenes">
+    <div class="unroll-stage">
+      <div class="unroll-head">
+        <h2 class="sec-title"><span lang="zh-CN">把照片铺成一幅画卷</span><span lang="en">Unrolled like a handscroll</span></h2>
+        <p class="sec-lead" lang="zh-CN">继续向下滚动,展开四景。</p>
+        <p class="sec-lead" lang="en">Keep scrolling to unroll all four scenes.</p>
+      </div>
+      <div class="unroll-viewport">
+        <div class="roller left" aria-hidden="true"></div>
+        <div class="roller right" aria-hidden="true"></div>
+        <div class="unroll-paper">
+          <div class="unroll-track">
+
+            <div class="scene">
+              <div class="scene-label">
+                <span class="seal-chip" aria-hidden="true">接</span>
+                <span class="t"><span lang="zh-CN">原样接入</span><span lang="en">Starts where your files are</span></span>
+                <span class="d"><span lang="zh-CN">不搬移 · 不改名 · 不锁库</span><span lang="en">no moving, no renaming, no vault</span></span>
+              </div>
+              <div class="shot" role="img" aria-label="界面示意:文件夹树保持原样 Illustration: your folder tree, untouched">
+                <div class="shot-bar" aria-hidden="true"><span>Scrollery</span><span class="win">─ ▢ ✕</span></div>
+                <div class="shot-body" aria-hidden="true">
+<pre class="mock-tree">
+图库/
+├─ 2019/ 冰岛/
+├─ 2020/ 婚礼/
+├─ 手机备份/
+├─ 扫描底片/
+└─ 客片交付/ 2026/
+<span class="keep">✓ 结构保持原样</span>
+<span class="dim">0 项被移动 · 0 项被改名</span></pre>
+        </div>
+      </div>
+            </div>
+
+            <div class="scene">
+              <div class="scene-label">
+                <span class="seal-chip" aria-hidden="true">铺</span>
+                <span class="t"><span lang="zh-CN">秒级铺开</span><span lang="en">On screen in seconds</span></span>
+                <span class="d"><span lang="zh-CN">两阶段扫描,先见网格</span><span lang="en">two-phase scan, grid first</span></span>
+              </div>
+              <div class="shot" role="img" aria-label="界面示意:两端对齐照片网格 Illustration: justified photo grid">
+                <div class="shot-bar" aria-hidden="true"><span>Scrollery</span><span class="win">─ ▢ ✕</span></div>
+                <div class="shot-body" aria-hidden="true">
+                  <div class="jrow"><div class="ph f1 w2"></div><div class="ph f2"></div><div class="ph f3"></div><div class="ph f4 w2"></div></div>
+                  <div class="jrow"><div class="ph f5"></div><div class="ph f6 w3"></div><div class="ph f7"></div></div>
+                  <div class="jrow"><div class="ph f8 w2"></div><div class="ph f1"></div><div class="ph f2 w2"></div><div class="ph f3"></div></div>
+                  <div class="jrow"><div class="ph f4"></div><div class="ph f5 w2"></div><div class="ph f6"></div><div class="ph f7 w2"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="scene">
+              <div class="scene-label">
+                <span class="seal-chip" aria-hidden="true">寻</span>
+                <span class="t"><span lang="zh-CN">一句话找到</span><span lang="en">Found from a sentence</span></span>
+                <span class="d"><span lang="zh-CN">中文语义搜索,全程本机</span><span lang="en">semantic search, fully on-device</span></span>
+              </div>
+              <div class="shot shot-search" role="img" aria-label="界面示意:语义搜索命中高亮 Illustration: semantic search highlighting matches">
+                <div class="shot-bar" aria-hidden="true"><span>Scrollery</span><span class="win">─ ▢ ✕</span></div>
+                <div class="shot-body" aria-hidden="true">
+                  <div class="searchbar"><span>海边 日落</span><span class="hint">AI · 本机</span></div>
+                  <div class="jrow"><div class="ph f2"></div><div class="ph f1 w2 hit"></div><div class="ph f3"></div><div class="ph f6 hit"></div></div>
+                  <div class="jrow"><div class="ph f4 w2"></div><div class="ph f1 hit"></div><div class="ph f7 w2"></div></div>
+                  <div class="jrow"><div class="ph f8"></div><div class="ph f5 w2"></div><div class="ph f6 w2 hit"></div><div class="ph f2"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="scene">
+              <div class="scene-label">
+                <span class="seal-chip" aria-hidden="true">游</span>
+                <span class="t"><span lang="zh-CN">沿时间漫游</span><span lang="en">Wander along time</span></span>
+                <span class="d"><span lang="zh-CN">密度时间轴,一拖到位</span><span lang="en">density scrubber, land anywhere</span></span>
+              </div>
+              <div class="shot" role="img" aria-label="界面示意:时间轴密度带 Illustration: timeline density scrubber">
+                <div class="shot-bar" aria-hidden="true"><span>Scrollery</span><span class="win">─ ▢ ✕</span></div>
+                <div class="shot-body" aria-hidden="true">
+                  <div class="tl-ruler"><span>2019</span><span>2021</span><span>2023</span><span>2026</span></div>
+                  <div class="tl-bars">
+                    <div class="tl-bar tlh2"></div><div class="tl-bar tlh4"></div><div class="tl-bar tlh3"></div><div class="tl-bar tlh6"></div>
+                    <div class="tl-bar tlh8 hot"></div><div class="tl-bar tlh5"></div><div class="tl-bar tlh2"></div><div class="tl-bar tlh3"></div>
+                    <div class="tl-bar tlh5"></div><div class="tl-bar tlh7"></div><div class="tl-bar tlh4"></div><div class="tl-bar tlh1"></div>
+                    <div class="tl-bar tlh3"></div><div class="tl-bar tlh6"></div><div class="tl-bar tlh4"></div><div class="tl-bar tlh2"></div>
+                  </div>
+                  <div class="jrow"><div class="ph f6 w2"></div><div class="ph f2"></div><div class="ph f1 w2"></div><div class="ph f7"></div></div>
+                  <div class="jrow"><div class="ph f3"></div><div class="ph f4 w2"></div><div class="ph f8"></div><div class="ph f5"></div></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="unroll-dots" role="group" aria-label="四景导航 Scene navigation">
+        <button class="dot" type="button" aria-label="第一景:原样接入 Scene 1" aria-current="true"></button>
+        <button class="dot" type="button" aria-label="第二景:秒级铺开 Scene 2" aria-current="false"></button>
+        <button class="dot" type="button" aria-label="第三景:一句话找到 Scene 3" aria-current="false"></button>
+        <button class="dot" type="button" aria-label="第四景:沿时间漫游 Scene 4" aria-current="false"></button>
+      </div>
     </div>
   </section>
 
-  <div class="scroll-art" aria-hidden="true">
-    <div class="roller"></div>
-    <div class="paper">
-      <div class="frames">
-        <div class="frame f1"></div><div class="frame f2"></div><div class="frame f3"></div><div class="frame f4"></div>
-        <div class="frame f5"></div><div class="frame f6"></div><div class="frame f7"></div><div class="frame f8"></div>
-        <div class="frame f3"></div><div class="frame f6"></div><div class="frame f1"></div><div class="frame f8"></div>
-        <div class="frame f1"></div><div class="frame f2"></div><div class="frame f3"></div><div class="frame f4"></div>
-        <div class="frame f5"></div><div class="frame f6"></div><div class="frame f7"></div><div class="frame f8"></div>
-        <div class="frame f3"></div><div class="frame f6"></div><div class="frame f1"></div><div class="frame f8"></div>
+  <!-- ── 三柱 ── -->
+  <section class="sec" id="pillars">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="seal-chip" aria-hidden="true">本</span>
+        <h2 class="sec-title"><span lang="zh-CN">三个立身之本</span><span lang="en">Three things we won't trade away</span></h2>
       </div>
-    </div>
-    <div class="roller"></div>
-  </div>
+      <p class="sec-lead" lang="zh-CN">快,是工程;私,是立场;文件是你的,是承诺。</p>
+      <p class="sec-lead" lang="en">Speed is engineering. Privacy is a stance. Your files staying yours is a promise.</p>
 
-  <section class="features">
-    <div class="grid">
-      <div class="card">
-        <div class="ico" aria-hidden="true">⌂</div>
-        <h3 lang="zh-CN">本地优先</h3>
-        <h3 lang="en">Local-first</h3>
-        <p lang="zh-CN">照片与索引都存在你的设备上,不强制上传、没有云订阅。离线也能正常使用。</p>
-        <p lang="en">Photos and their index live on your device. No forced uploads, no cloud subscription. Works offline.</p>
+      <div class="pillar-grid">
+        <div class="pillar">
+          <div class="pillar-glyph" aria-hidden="true">快</div>
+          <h3 class="pillar-title"><span lang="zh-CN">生来为海量</span><span lang="en">Fast — built for big</span></h3>
+          <p class="pillar-text" lang="zh-CN">布局在 Rust 后端算好,前端只画看得见的那几行。数十万张的图库,滚起来依然像一张长卷。</p>
+          <p class="pillar-text" lang="en">Layout is computed in Rust; the UI paints only the rows you can see. Hundreds of thousands of items still scroll like one long sheet of paper.</p>
+          <ul class="spec" aria-label="性能要点 Performance notes">
+            <li>两阶段扫描 · 秒级首屏</li>
+            <li>Rust Justified Layout + 行级虚拟化</li>
+            <li>大库分段虚拟化 + 自研逻辑滚动条</li>
+            <li>WIC GPU 解码(Windows)</li>
+          </ul>
+        </div>
+        <div class="pillar">
+          <div class="pillar-glyph" aria-hidden="true">私</div>
+          <h3 class="pillar-title"><span lang="zh-CN">完全离线</span><span lang="en">Private — fully offline</span></h3>
+          <p class="pillar-text" lang="zh-CN">语义搜索与人脸识别都在你的机器上推理。没有账号,没有云端,断网照常工作。</p>
+          <p class="pillar-text" lang="en">Semantic search and face recognition run on your machine. No account, no cloud; it works with the network cable unplugged.</p>
+          <ul class="spec" aria-label="隐私要点 Privacy notes">
+            <li>Chinese-CLIP 本机推理(ONNX / DirectML)</li>
+            <li>人脸模型商用安全(MIT / Apache-2.0)</li>
+            <li>无账号 · 无上传 · 离线可用</li>
+          </ul>
+        </div>
+        <div class="pillar">
+          <div class="pillar-glyph" aria-hidden="true">真</div>
+          <h3 class="pillar-title"><span lang="zh-CN">文件始终是你的</span><span lang="en">Yours — files stay files</span></h3>
+          <p class="pillar-text" lang="zh-CN">沿用你已有的文件夹,不搬移、不改名、不锁进私有库。哪天你不用 Scrollery 了,一切原样还在。</p>
+          <p class="pillar-text" lang="en">It works with the folders you already have — no moving, no renaming, no proprietary vault. Quit Scrollery any day; everything is exactly where it was.</p>
+          <ul class="spec" aria-label="数据主权要点 Ownership notes">
+            <li>Picasa 式文件夹树哲学</li>
+            <li>原地管理 · 回收站软删除可反悔</li>
+            <li>核心开源 · Apache-2.0</li>
+          </ul>
+        </div>
       </div>
-      <div class="card">
-        <div class="ico" aria-hidden="true">⚡</div>
-        <h3 lang="zh-CN">为海量图库而生</h3>
-        <h3 lang="en">Built for big libraries</h3>
-        <p lang="zh-CN">虚拟滚动与多级缩略图管线,数十万张照片的图库依然顺滑流畅。</p>
-        <p lang="en">Virtualized scrolling and a multi-tier thumbnail pipeline keep libraries of hundreds of thousands of photos smooth.</p>
-      </div>
-      <div class="card">
-        <div class="ico" aria-hidden="true">✦</div>
-        <h3 lang="zh-CN">本地 AI</h3>
-        <h3 lang="en">On-device AI</h3>
-        <p lang="zh-CN">自然语言搜索与人脸检测,模型全部在本机离线运行,数据不出门。</p>
-        <p lang="en">Natural-language search and face detection run entirely on your machine — your data never leaves it.</p>
-      </div>
-      <div class="card">
-        <div class="ico" aria-hidden="true">▣</div>
-        <h3 lang="zh-CN">原地管理</h3>
-        <h3 lang="en">Manage in place</h3>
-        <p lang="zh-CN">直接管理你现有的文件夹,不搬动、不改名、不锁进私有库。你的文件始终是你的文件。</p>
-        <p lang="en">Works with the folders you already have — no moving, no renaming, no proprietary vault. Your files stay your files.</p>
-      </div>
-      <div class="card">
-        <div class="ico" aria-hidden="true">◫</div>
-        <h3 lang="zh-CN">插件化格式</h3>
-        <h3 lang="en">Pluggable formats</h3>
-        <p lang="zh-CN">通过签名插件扩展专业格式支持(如 PSD),核心保持轻快。</p>
-        <p lang="en">Signed plugins extend support for professional formats (such as PSD) while the core stays lean.</p>
-      </div>
-      <div class="card">
-        <div class="ico" aria-hidden="true">◇</div>
-        <h3 lang="zh-CN">代码公开</h3>
-        <h3 lang="en">Source available</h3>
-        <p lang="zh-CN">核心代码公开于 GitHub,构建过程可查验,欢迎围观与反馈。</p>
-        <p lang="en">The core source is public on GitHub — inspectable builds, feedback welcome.</p>
-      </div>
-    </div>
-
-    <div class="roadmap">
-      <p lang="zh-CN"><b>现状:</b>Windows 版内测进行中;macOS 版本随后;移动端在更远的路线图上。</p>
-      <p lang="en"><b>Status:</b> the Windows build is in private beta; macOS comes next; mobile is further down the roadmap.</p>
-      <p class="hedge" lang="zh-CN">产品处于内测阶段,本页信息以正式发布为准。</p>
-      <p class="hedge" lang="en">Scrollery is in private beta; details on this page may change before release.</p>
     </div>
   </section>
+
+  <!-- ── 特性 ── -->
+  <section class="sec" id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="seal-chip" aria-hidden="true">艺</span>
+        <h2 class="sec-title"><span lang="zh-CN">卷中诸艺</span><span lang="en">What's inside</span></h2>
+      </div>
+      <p class="sec-lead" lang="zh-CN">一座图库该有的,和一座图库不常有的。</p>
+      <p class="sec-lead" lang="en">Everything a library should have — and a few things libraries rarely do.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-ico" aria-hidden="true">▤</div>
+          <h3 class="card-title"><span lang="zh-CN">统一画廊</span><span lang="en">One gallery</span></h3>
+          <p class="card-text" lang="zh-CN">图、视、文、音同在一张网格:日期分组、Live Photo 配对、评分与色标。</p>
+          <p class="card-text" lang="en">Photos, videos, documents and audio in one grid — date groups, Live Photo pairing, ratings and color labels.</p>
+        </div>
+        <div class="card">
+          <div class="card-ico" aria-hidden="true">✦</div>
+          <h3 class="card-title"><span lang="zh-CN">语义搜索</span><span lang="en">Semantic search</span></h3>
+          <p class="card-text" lang="zh-CN">用一句中文描述画面,本机 AI 把它找出来——不用先打标签。</p>
+          <p class="card-text" lang="en">Describe the picture in a sentence; on-device AI finds it. No tagging chores first.</p>
+        </div>
+        <div class="card">
+          <div class="card-ico" aria-hidden="true">◎</div>
+          <h3 class="card-title"><span lang="zh-CN">人物</span><span lang="en">People</span></h3>
+          <p class="card-text" lang="zh-CN">本机人脸检测与聚类,人物墙一目了然;命名、合并都在你手里。</p>
+          <p class="card-text" lang="en">On-device face detection and clustering with a browsable people wall; naming and merging stay in your hands.</p>
+        </div>
+        <div class="card">
+          <div class="card-ico" aria-hidden="true">≡</div>
+          <h3 class="card-title"><span lang="zh-CN">阅读器</span><span lang="en">Reader</span></h3>
+          <p class="card-text" lang="zh-CN">txt、md、epub、pdf 一站式阅读;竖排「竹简」模式,向卷轴致敬。</p>
+          <p class="card-text" lang="en">Reads txt, md, epub and pdf — including a vertical “bamboo scroll” mode, our nod to the namesake.</p>
+        </div>
+        <div class="card">
+          <div class="card-ico" aria-hidden="true">∿</div>
+          <h3 class="card-title"><span lang="zh-CN">音频</span><span lang="en">Audio</span></h3>
+          <p class="card-text" lang="zh-CN">封面、元数据与同步歌词,录音与音乐同样归卷。</p>
+          <p class="card-text" lang="en">Cover art, metadata and synced lyrics — recordings and music belong on the scroll too.</p>
+        </div>
+        <div class="card">
+          <div class="card-ico" aria-hidden="true">◔</div>
+          <h3 class="card-title"><span lang="zh-CN">时间轴</span><span lang="en">Timeline</span></h3>
+          <p class="card-text" lang="zh-CN">右缘密度带加放大镜,数万张里一拖到位。</p>
+          <p class="card-text" lang="en">A density scrubber with a magnifier — land anywhere among tens of thousands in one drag.</p>
+        </div>
+        <div class="card">
+          <div class="card-ico" aria-hidden="true">◫</div>
+          <h3 class="card-title"><span lang="zh-CN">插件商店</span><span lang="en">Plugin store</span></h3>
+          <p class="card-text" lang="zh-CN">签名插件按需扩展专业格式,PSD 首发;核心保持轻快。</p>
+          <p class="card-text" lang="en">Signed plugins extend pro formats on demand — PSD first — while the core stays lean.</p>
+        </div>
+        <div class="card">
+          <div class="card-ico" aria-hidden="true">⏏</div>
+          <h3 class="card-title"><span lang="zh-CN">离线卷</span><span lang="en">Offline volumes</span></h3>
+          <p class="card-text" lang="zh-CN">移动硬盘拔走不慌:条目灰显待命,重新接上即恢复。</p>
+          <p class="card-text" lang="en">Unplug a drive and nothing breaks: items grey out and wait, then recover the moment it's back.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 主题 ── -->
+  <section class="sec" id="themes">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="seal-chip" aria-hidden="true">色</span>
+        <h2 class="sec-title"><span lang="zh-CN">六色传统,亮暗各半</span><span lang="en">Six themes from the ink tradition</span></h2>
+      </div>
+      <p class="sec-lead" lang="zh-CN">以传统色命名的六套主题,三亮三暗;亮暗各自记住你的选择,Windows 标题栏同色跟随。</p>
+      <p class="sec-lead" lang="en">Six themes named after traditional pigments — three light, three dark. Light and dark slots remember your picks; the Windows title bar follows suit.</p>
+
+      <div class="theme-grid">
+        <div class="theme-item">
+          <img src="/assets/shots/theme-moonlight.webp" alt="月白主题 Moonlight theme" width="720" height="450" loading="lazy">
+          <div class="theme-name"><span class="zh-name">月白</span><span class="en-name">Moonlight · light</span></div>
+        </div>
+        <div class="theme-item">
+          <img src="/assets/shots/theme-porcelain.webp" alt="素主题 Porcelain theme" width="720" height="450" loading="lazy">
+          <div class="theme-name"><span class="zh-name">素</span><span class="en-name">Porcelain · light</span></div>
+        </div>
+        <div class="theme-item">
+          <img src="/assets/shots/theme-xuan.webp" alt="宣主题 Xuan theme" width="720" height="450" loading="lazy">
+          <div class="theme-name"><span class="zh-name">宣</span><span class="en-name">Xuan · light</span></div>
+        </div>
+        <div class="theme-item">
+          <img src="/assets/shots/theme-ink.webp" alt="墨主题 Ink theme" width="720" height="450" loading="lazy">
+          <div class="theme-name"><span class="zh-name">墨</span><span class="en-name">Ink · dark</span></div>
+        </div>
+        <div class="theme-item">
+          <img src="/assets/shots/theme-obsidian.webp" alt="玄主题 Obsidian theme" width="720" height="450" loading="lazy">
+          <div class="theme-name"><span class="zh-name">玄</span><span class="en-name">Obsidian · dark</span></div>
+        </div>
+        <div class="theme-item">
+          <img src="/assets/shots/theme-dai.webp" alt="黛主题 Dai theme" width="720" height="450" loading="lazy">
+          <div class="theme-name"><span class="zh-name">黛</span><span class="en-name">Dai · dark</span></div>
+        </div>
+      </div>
+      <p class="theme-note">
+        <span lang="zh-CN">阅读器另备五套独立纸色:纸白、羊皮纸、护眼绿、夜间、石墨。截图均为示例图库。</span>
+        <span lang="en">The reader ships five paper tones of its own: paper, sepia, eye-care green, night and graphite. All screenshots show the sample library.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── 格式 ── -->
+  <section class="sec" id="formats">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="seal-chip" aria-hidden="true">纳</span>
+        <h2 class="sec-title"><span lang="zh-CN">六十余种格式,开箱即用</span><span lang="en">60+ formats out of the box</span></h2>
+      </div>
+      <p class="sec-lead" lang="zh-CN">常见格式内置;专业格式由签名插件按需扩展。</p>
+      <p class="sec-lead" lang="en">Common formats are built in; professional ones arrive as signed plugins, on demand.</p>
+
+      <div class="fmt-band">
+        <div class="fmt-row">
+          <span class="fmt-k"><span lang="zh-CN">图像</span><span lang="en">Images</span></span>
+          <span class="fmt-v">jpg · jpeg · png · webp · gif · bmp · tif · tiff · heic · heif · avif <span lang="zh-CN">(HEIC/AVIF 走 Windows GPU 解码)</span><span lang="en">(HEIC/AVIF via Windows GPU decode)</span></span>
+        </div>
+        <div class="fmt-row">
+          <span class="fmt-k">RAW</span>
+          <span class="fmt-v">cr2 · cr3 · nef · arw · dng · raf · orf · rw2 · pef · srw</span>
+        </div>
+        <div class="fmt-row">
+          <span class="fmt-k"><span lang="zh-CN">视频</span><span lang="en">Video</span></span>
+          <span class="fmt-v">mp4 · m4v · mov · avi · mkv · webm · wmv · flv · mpg · mpeg · 3gp · 3g2 · ts · mts · m2ts · ogv · asf</span>
+        </div>
+        <div class="fmt-row">
+          <span class="fmt-k"><span lang="zh-CN">音频</span><span lang="en">Audio</span></span>
+          <span class="fmt-v">mp3 · flac · wav · aac · m4a · ogg · oga · opus · wma · aiff · aif · ape · alac</span>
+        </div>
+        <div class="fmt-row">
+          <span class="fmt-k"><span lang="zh-CN">文档</span><span lang="en">Docs</span></span>
+          <span class="fmt-v">pdf · svg · epub · doc · docx · xls · xlsx · ppt · pptx · odt · ods · odp · txt · md · rtf</span>
+        </div>
+        <div class="fmt-row">
+          <span class="fmt-k"><span lang="zh-CN">插件</span><span lang="en">Plugins</span></span>
+          <span class="fmt-v"><span class="plug">psd</span> <span lang="zh-CN">(首发签名插件,商店安装)</span><span lang="en">(first signed plugin, from the store)</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 技术底座 ── -->
+  <section class="sec" id="tech">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="seal-chip" aria-hidden="true">械</span>
+        <h2 class="sec-title"><span lang="zh-CN">卷底的机械</span><span lang="en">Under the hood</span></h2>
+      </div>
+      <p class="sec-lead" lang="zh-CN">核心代码公开在 GitHub,构建可查验;性能不靠形容词,靠架构。</p>
+      <p class="sec-lead" lang="en">The core source is public on GitHub with inspectable builds. Performance comes from architecture, not adjectives.</p>
+
+      <div class="tech-band">
+        <div class="tech-cols">
+          <div>
+            <h3 class="tech-h"><span lang="zh-CN">引擎</span><span lang="en">Engine</span></h3>
+            <ul class="tech-list">
+              <li>Rust + Tauri 2 <span class="m">— <span lang="zh-CN">桌面壳与系统集成</span><span lang="en">desktop shell &amp; OS integration</span></span></li>
+              <li>SQLite(WAL)<span class="m">— <span lang="zh-CN">索引与元数据,全部本地</span><span lang="en">index &amp; metadata, all local</span></span></li>
+              <li>rayon <span class="m">— <span lang="zh-CN">CPU 并行流水线</span><span lang="en">CPU-parallel pipelines</span></span></li>
+              <li>ONNX Runtime + DirectML <span class="m">— <span lang="zh-CN">AI 独立子进程</span><span lang="en">AI in its own subprocess</span></span></li>
+              <li>WIC <span class="m">— <span lang="zh-CN">GPU 图像解码(Windows)</span><span lang="en">GPU image decode (Windows)</span></span></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="tech-h"><span lang="zh-CN">界面</span><span lang="en">Interface</span></h3>
+            <ul class="tech-list">
+              <li>Vue 3 + TypeScript <span class="m">— strict mode</span></li>
+              <li><span lang="zh-CN">原生 CSS 变量主题系统</span><span lang="en">Native CSS-variable theming</span> <span class="m">— 6 themes</span></li>
+              <li><span lang="zh-CN">行级虚拟化 + Canvas 网格</span><span lang="en">Row virtualization + canvas grid</span> <span class="m">— <span lang="zh-CN">DOM 恒定</span><span lang="en">constant DOM</span></span></li>
+              <li><span lang="zh-CN">后端布局缓存,前端只取视口</span><span lang="en">Backend layout cache; UI pulls the viewport</span></li>
+            </ul>
+          </div>
+        </div>
+        <p class="claim">
+          <span lang="zh-CN">性能口径:在<span class="num">数十万张</span>的真实图库上日常实测开发,架构面向<span class="num">十万~百万张</span>设计。数字为开发机内部实测,非正式基准。</span>
+          <span lang="en">Honest numbers: developed and measured daily against a real library of <span class="num">hundreds of thousands</span> of items, architected for <span class="num">100k–1M</span>. Internal dev-machine measurements, not formal benchmarks.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 路线图 + 内测 ── -->
+  <section class="sec" id="roadmap">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="seal-chip" aria-hidden="true">程</span>
+        <h2 class="sec-title"><span lang="zh-CN">路线图</span><span lang="en">Roadmap</span></h2>
+      </div>
+      <div class="roadmap">
+        <div class="roadmap-steps">
+          <div class="step">
+            <div class="step-k now"><span lang="zh-CN">进行中</span><span lang="en">Now</span></div>
+            <div class="step-t">Windows</div>
+            <p class="step-d" lang="zh-CN">内测进行中,邮件申请、免费参与。</p>
+            <p class="step-d" lang="en">Private beta — apply by email, free to join.</p>
+          </div>
+          <div class="step">
+            <div class="step-k later"><span lang="zh-CN">路线图上</span><span lang="en">Next on the map</span></div>
+            <div class="step-t">macOS</div>
+            <p class="step-d" lang="zh-CN">规划中,次序在 Windows 之后。</p>
+            <p class="step-d" lang="en">Planned, after Windows settles.</p>
+          </div>
+          <div class="step">
+            <div class="step-k later"><span lang="zh-CN">远期</span><span lang="en">Further out</span></div>
+            <div class="step-t"><span lang="zh-CN">移动端</span><span lang="en">Mobile</span></div>
+            <p class="step-d" lang="zh-CN">浏览伴侣的构想,尚未开工。</p>
+            <p class="step-d" lang="en">A browsing companion — an idea, not yet in motion.</p>
+          </div>
+        </div>
+        <p class="hedge" lang="zh-CN">产品处于内测阶段:本页信息以正式发布为准,不构成发布时间承诺。</p>
+        <p class="hedge" lang="en">Scrollery is in private beta: details here may change before release, and nothing on this page is a date commitment.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="join" id="join">
+    <div class="wrap">
+      <h2 class="join-title"><span lang="zh-CN">来,一起把卷铺开</span><span lang="en">Help us unroll it</span></h2>
+      <p class="join-sub" lang="zh-CN">来信告诉我们你的图库规模与机器配置,我们按批次安排内测名额。此邮箱只用于内测与反馈,不发营销邮件。</p>
+      <p class="join-sub" lang="en">Tell us your library size and machine specs; beta seats go out in batches. This address is for beta and feedback only — no marketing mail, ever.</p>
+      <div class="ctas">
+        <a class="btn primary" href="mailto:contact@scrollery.app?subject=Scrollery%20%E5%86%85%E6%B5%8B%E7%94%B3%E8%AF%B7%20%2F%20Beta%20request"><span lang="zh-CN">写信申请内测</span><span lang="en">Apply by email</span></a>
+        <a class="btn ghost" href="/faq"><span lang="zh-CN">先看看 FAQ</span><span lang="en">Read the FAQ first</span></a>
+      </div>
+    </div>
+  </section>
+
 </main>
 
-<footer>
-  <span>© 2026 Scrollery</span>
-  <span>
-    <a href="mailto:contact@scrollery.app">contact@scrollery.app</a>
-    &nbsp;·&nbsp;
-    <a href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a>
-  </span>
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© 2026 Scrollery</span>
+      <span class="foot-links">
+        <a href="mailto:contact@scrollery.app">contact@scrollery.app</a>
+        <a href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a>
+        <a href="/faq">FAQ</a>
+        <a href="/privacy"><span lang="zh-CN">隐私承诺</span><span lang="en">Privacy</span></a>
+      </span>
+    </div>
+    <p class="foot-legal">
+      <span lang="zh-CN">「Scrollery」名称与「卷」印标识为商标,不在核心代码 Apache-2.0 授权范围内(详见仓库 <a href="https://github.com/gfgjs/scrollery/blob/main/TRADEMARK.md" rel="noopener">TRADEMARK.md</a>)。本站不使用 Cookie,亦无任何跟踪脚本。</span>
+      <span lang="en">The “Scrollery” name and the seal mark are trademarks, not covered by the core's Apache-2.0 license (see <a href="https://github.com/gfgjs/scrollery/blob/main/TRADEMARK.md" rel="noopener">TRADEMARK.md</a>). This site sets no cookies and runs no trackers.</span>
+    </p>
+  </div>
 </footer>
 
-</div>
-
-<script>
-/* 主题与语言切换:写 localStorage,根节点属性驱动 CSS(无框架、无跟踪脚本) */
-(function () {
-  var root = document.documentElement;
-
-  document.getElementById("themeBtn").addEventListener("click", function () {
-    var dark = root.dataset.theme === "dark" ||
-      (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
-    var next = dark ? "light" : "dark";
-    root.dataset.theme = next;
-    try { localStorage.setItem("scrollery-theme", next); } catch (e) {}
-  });
-
-  var langBtn = document.getElementById("langBtn");
-  function paintLangBtn() { langBtn.textContent = root.dataset.lang === "zh" ? "EN" : "中文"; }
-  langBtn.addEventListener("click", function () {
-    var next = root.dataset.lang === "zh" ? "en" : "zh";
-    root.dataset.lang = next;
-    root.lang = next === "zh" ? "zh-CN" : "en";
-    try { localStorage.setItem("scrollery-lang", next); } catch (e) {}
-    paintLangBtn();
-  });
-  paintLangBtn();
-})();
-</script>
 </body>
 </html>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 朱砂方印「卷」:站点品牌印记,与应用无关(应用图标另行设计中) -->
+  <rect width="64" height="64" rx="14" fill="#c3402b"/>
+  <rect x="4.5" y="4.5" width="55" height="55" rx="10.5" fill="none" stroke="#ffffff" stroke-opacity=".28" stroke-width="2"/>
+  <text x="32" y="46" font-size="38" text-anchor="middle" fill="#fff" font-family="KaiTi, STKaiti, 'Songti SC', SimSun, serif">卷</text>
+</svg>

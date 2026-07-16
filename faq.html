@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ — Scrollery 画卷</title>
+<meta name="description" content="Scrollery 常见问题:是否上传照片、支持格式、内测申请、系统要求、开源与商标。Scrollery FAQ: privacy, formats, beta access, requirements, open source.">
+<link rel="canonical" href="https://scrollery.app/faq">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Scrollery">
+<meta property="og:title" content="Scrollery FAQ">
+<meta property="og:description" content="常见问题:隐私、格式、内测、开源。FAQ: privacy, formats, beta, open source.">
+<meta property="og:url" content="https://scrollery.app/faq">
+<meta property="og:image" content="https://scrollery.app/assets/og.png">
+<meta name="theme-color" content="#f6f2e9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171310" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/boot.js"></script>
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="/">
+      <span class="seal-mini" aria-hidden="true">卷</span>
+      <span class="brand-name">Scrollery</span>
+    </a>
+    <nav class="head-nav" aria-label="站点导航 Site">
+      <a href="/#features"><span lang="zh-CN">特性</span><span lang="en">Features</span></a>
+      <a href="/#themes"><span lang="zh-CN">主题</span><span lang="en">Themes</span></a>
+      <a href="/#tech"><span lang="zh-CN">技术</span><span lang="en">Under the hood</span></a>
+      <a href="/#join"><span lang="zh-CN">内测</span><span lang="en">Beta</span></a>
+      <a href="/faq" aria-current="page">FAQ</a>
+    </nav>
+    <div class="controls">
+      <button class="ctl" id="langBtn" type="button">EN</button>
+      <button class="ctl" id="themeBtn" type="button" aria-label="切换明暗主题 Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <h1 class="page-title"><span lang="zh-CN">常见问题</span><span lang="en">Questions, answered</span></h1>
+    <p class="page-lead" lang="zh-CN">没找到答案?写信到 contact@scrollery.app,内测期间我们读每一封。</p>
+    <p class="page-lead" lang="en">Not covered here? Write to contact@scrollery.app — during the beta we read every letter.</p>
+  </div>
+
+  <div class="faq-list">
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">Scrollery 是云服务吗?会上传我的照片吗?</span><span lang="en">Is Scrollery a cloud service? Does it upload my photos?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">不是,也不会。Scrollery 是一款本地优先的桌面应用:照片、索引、缩略图和 AI 模型推理全部在你的设备上,没有账号体系,断网照常工作。详见<a href="/privacy">隐私承诺</a>。</p>
+        <p lang="en">No and no. Scrollery is a local-first desktop app: your files, the index, thumbnails and AI inference all live on your device. There is no account system, and it works fully offline. See the <a href="/privacy">privacy promise</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">现在能下载吗?怎么加入内测?</span><span lang="en">Can I download it now? How do I join the beta?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">Windows 版内测进行中,暂无公开下载。发邮件到 <a href="mailto:contact@scrollery.app?subject=Scrollery%20%E5%86%85%E6%B5%8B%E7%94%B3%E8%AF%B7%20%2F%20Beta%20request">contact@scrollery.app</a>,附上你的图库规模(大约多少张)与机器配置,我们按批次发放名额。内测免费。</p>
+        <p lang="en">The Windows build is in private beta; there is no public download yet. Email <a href="mailto:contact@scrollery.app?subject=Scrollery%20%E5%86%85%E6%B5%8B%E7%94%B3%E8%AF%B7%20%2F%20Beta%20request">contact@scrollery.app</a> with your rough library size and machine specs, and seats go out in batches. The beta is free.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">支持哪些文件格式?</span><span lang="en">Which file formats are supported?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">内置六十余种:常见图像(jpg/png/webp/gif/tif 等)、HEIC/HEIF/AVIF(Windows GPU 解码)、十种相机 RAW、十七种视频、十三种音频与十五种文档格式,并识别配对 Live Photo。专业格式(如 PSD)通过商店里的签名插件按需安装。完整清单见<a href="/#formats">格式一节</a>。</p>
+        <p lang="en">60+ formats are built in: common images (jpg/png/webp/gif/tif…), HEIC/HEIF/AVIF via Windows GPU decode, ten camera RAW types, seventeen video and thirteen audio formats, fifteen document types, plus Live Photo pairing. Professional formats such as PSD install as signed plugins from the store. Full list in the <a href="/#formats">formats section</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">它会改动我的文件夹结构吗?</span><span lang="en">Will it touch my folder structure?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">不会。Scrollery 沿用你现有的文件夹,原地建立索引:不搬移、不改名、不导入私有库。应用内删除默认进回收站,可反悔。哪天你不再使用,文件仍在原处。</p>
+        <p lang="en">No. Scrollery indexes the folders you already have, in place — no moving, no renaming, no importing into a proprietary vault. In-app deletion goes to a recycle bin first. If you ever stop using it, your files are exactly where they always were.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">AI 搜索和人脸识别在哪里运行?</span><span lang="en">Where do AI search and face recognition run?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">全部在你的机器上:语义搜索使用 Chinese-CLIP,人脸检测与聚类使用商用许可安全的开源模型,推理跑在独立的本机子进程里(ONNX Runtime / DirectML)。图像内容不会离开你的设备。</p>
+        <p lang="en">Entirely on your machine: semantic search uses Chinese-CLIP, and face detection/clustering uses openly licensed, commercially safe models, all running in a local subprocess (ONNX Runtime / DirectML). Image content never leaves your device.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">系统要求是什么?</span><span lang="en">What are the system requirements?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">内测阶段面向 64 位 Windows 10 / 11。HEIC/AVIF 解码与 AI 加速会利用系统自带的 GPU 能力(WIC / DirectML),无独立显卡也能运行。macOS 在路线图上。</p>
+        <p lang="en">The beta targets 64-bit Windows 10 / 11. HEIC/AVIF decoding and AI acceleration use the OS's GPU facilities (WIC / DirectML); a discrete GPU is not required. macOS is on the roadmap.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">收费吗?</span><span lang="en">Does it cost anything?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">内测免费。正式版的商业模式尚未最终确定,会在发布时公布;核心代码保持开源(Apache-2.0)。</p>
+        <p lang="en">The beta is free. Pricing for the final release hasn't been settled and will be announced at launch; the core stays open source under Apache-2.0.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">开源吗?我能参与吗?</span><span lang="en">Is it open source? Can I contribute?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">核心代码以 Apache-2.0 公开在 <a href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a>,欢迎围观、提 issue 与反馈;贡献代码需签署 CLA(流程见仓库 CONTRIBUTING)。「Scrollery」名称与标识为商标,授权范围另见 TRADEMARK.md;部分专业格式插件为闭源发行。</p>
+        <p lang="en">The core is public on <a href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a> under Apache-2.0 — issues and feedback welcome; code contributions require a CLA (see CONTRIBUTING in the repo). The “Scrollery” name and mark are trademarks (see TRADEMARK.md), and some professional-format plugins ship closed-source.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">移动硬盘和 NAS 能用吗?</span><span lang="en">Do external drives and NAS work?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">能。移动硬盘拔出后,相关条目灰显待命,重新接上即自动恢复;库与缓存也可以放在 WebDAV 网络存储上(例如你自己的 NAS)——数据依然只流向你指定的服务器。</p>
+        <p lang="en">Yes. When a drive is unplugged its items grey out and wait, recovering automatically on reconnect. The library and caches can also live on WebDAV storage (your own NAS, for example) — data still flows only to servers you designate.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><span lang="zh-CN">如何反馈问题或提建议?</span><span lang="en">How do I report issues or suggest things?</span></summary>
+      <div class="faq-a">
+        <p lang="zh-CN">邮件 <a href="mailto:contact@scrollery.app">contact@scrollery.app</a>,或在 <a href="https://github.com/gfgjs/scrollery/issues" rel="noopener">GitHub Issues</a> 留言。该邮箱只用于内测与反馈,不发营销邮件。</p>
+        <p lang="en">Email <a href="mailto:contact@scrollery.app">contact@scrollery.app</a> or open a <a href="https://github.com/gfgjs/scrollery/issues" rel="noopener">GitHub issue</a>. The address is used for beta and feedback only — no marketing mail.</p>
+      </div>
+    </details>
+
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© 2026 Scrollery</span>
+      <span class="foot-links">
+        <a href="mailto:contact@scrollery.app">contact@scrollery.app</a>
+        <a href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a>
+        <a href="/faq">FAQ</a>
+        <a href="/privacy"><span lang="zh-CN">隐私承诺</span><span lang="en">Privacy</span></a>
+      </span>
+    </div>
+    <p class="foot-legal">
+      <span lang="zh-CN">「Scrollery」名称与「卷」印标识为商标,不在核心代码 Apache-2.0 授权范围内(详见仓库 <a href="https://github.com/gfgjs/scrollery/blob/main/TRADEMARK.md" rel="noopener">TRADEMARK.md</a>)。本站不使用 Cookie,亦无任何跟踪脚本。</span>
+      <span lang="en">The “Scrollery” name and the seal mark are trademarks, not covered by the core's Apache-2.0 license (see <a href="https://github.com/gfgjs/scrollery/blob/main/TRADEMARK.md" rel="noopener">TRADEMARK.md</a>). This site sets no cookies and runs no trackers.</span>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

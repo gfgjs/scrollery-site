@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>隐私承诺 Privacy — Scrollery 画卷</title>
+<meta name="description" content="Scrollery 隐私承诺:照片不上传、AI 全程本机、无账号无跟踪;本网站零 Cookie 零分析脚本。Scrollery privacy promise: nothing uploaded, on-device AI, no cookies.">
+<link rel="canonical" href="https://scrollery.app/privacy">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Scrollery">
+<meta property="og:title" content="Scrollery 隐私承诺 · Privacy promise">
+<meta property="og:description" content="照片不上传、AI 全程本机、无账号无跟踪。Nothing uploaded, on-device AI, no tracking.">
+<meta property="og:url" content="https://scrollery.app/privacy">
+<meta property="og:image" content="https://scrollery.app/assets/og.png">
+<meta name="theme-color" content="#f6f2e9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171310" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script src="/assets/boot.js"></script>
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="/">
+      <span class="seal-mini" aria-hidden="true">卷</span>
+      <span class="brand-name">Scrollery</span>
+    </a>
+    <nav class="head-nav" aria-label="站点导航 Site">
+      <a href="/#features"><span lang="zh-CN">特性</span><span lang="en">Features</span></a>
+      <a href="/#themes"><span lang="zh-CN">主题</span><span lang="en">Themes</span></a>
+      <a href="/#tech"><span lang="zh-CN">技术</span><span lang="en">Under the hood</span></a>
+      <a href="/#join"><span lang="zh-CN">内测</span><span lang="en">Beta</span></a>
+      <a href="/faq">FAQ</a>
+    </nav>
+    <div class="controls">
+      <button class="ctl" id="langBtn" type="button">EN</button>
+      <button class="ctl" id="themeBtn" type="button" aria-label="切换明暗主题 Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <h1 class="page-title"><span lang="zh-CN">隐私承诺</span><span lang="en">Privacy promise</span></h1>
+    <p class="page-lead" lang="zh-CN">「本地优先」不是营销词,是架构决定:数据留在设备上,是这款软件的默认物理形态。</p>
+    <p class="page-lead" lang="en">“Local-first” is not a marketing word here; it is an architectural decision. Data staying on your device is this software's default physical shape.</p>
+  </div>
+
+  <div class="prose">
+    <h2 lang="zh-CN">应用:你的照片不出门</h2>
+    <h2 lang="en">The app: your photos never leave</h2>
+    <ul>
+      <li lang="zh-CN">照片、视频、文档与音频保持在你自己的磁盘上;Scrollery 原地索引,不上传任何媒体内容。</li>
+      <li lang="en">Your photos, videos, documents and audio stay on your own disks; Scrollery indexes them in place and uploads no media content.</li>
+      <li lang="zh-CN">索引、缩略图与 AI 向量等派生数据同样存储在本机。</li>
+      <li lang="en">Derived data — the index, thumbnails, AI embeddings — is stored locally as well.</li>
+      <li lang="zh-CN">语义搜索与人脸识别的模型推理全部在本机子进程中运行,断网可用;图像内容不发往任何服务器。</li>
+      <li lang="en">Semantic search and face recognition run entirely in a local subprocess and work offline; image content is sent to no server.</li>
+      <li lang="zh-CN">没有账号体系,不要求注册。</li>
+      <li lang="en">There is no account system and nothing to sign up for.</li>
+      <li lang="zh-CN">若你主动配置 WebDAV 网络存储(例如自家 NAS),库与缓存只流向你指定的服务器。</li>
+      <li lang="en">If you deliberately configure WebDAV storage (your own NAS, say), the library and caches flow only to servers you designate.</li>
+    </ul>
+    <p class="small" lang="zh-CN">产品处于内测阶段;正式发布时将随安装包附带完整的隐私说明,若有任何联网行为(如检查更新),会在其中逐项列明并可关闭。</p>
+    <p class="small" lang="en">Scrollery is in private beta; the release build will ship with a full privacy statement enumerating any network activity (such as update checks), each item listed and switchable.</p>
+
+    <h2 lang="zh-CN">本网站:零 Cookie,零跟踪</h2>
+    <h2 lang="en">This website: no cookies, no tracking</h2>
+    <ul>
+      <li lang="zh-CN">不设 Cookie,不接入任何统计或分析脚本,不加载任何第三方资源。</li>
+      <li lang="en">No cookies, no analytics scripts, no third-party resources of any kind.</li>
+      <li lang="zh-CN">你的主题与语言偏好保存在浏览器 localStorage 里,只存在于你的设备。</li>
+      <li lang="en">Your theme and language preferences live in your browser's localStorage, on your device only.</li>
+      <li lang="zh-CN">本站托管于 Cloudflare Pages;Cloudflare 作为基础设施提供商,可能按其标准做法保留短期访问日志,我们不在其上叠加任何自有收集。</li>
+      <li lang="en">The site is hosted on Cloudflare Pages; as the infrastructure provider, Cloudflare may keep short-lived access logs per its standard practice. We add no collection of our own on top.</li>
+    </ul>
+
+    <h2 lang="zh-CN">邮件</h2>
+    <h2 lang="en">Email</h2>
+    <ul>
+      <li lang="zh-CN">contact@scrollery.app 只用于内测申请与反馈沟通;来信内容不用于其他目的,不会被出售或共享。</li>
+      <li lang="en">contact@scrollery.app is used solely for beta applications and feedback; your mail is used for nothing else and never sold or shared.</li>
+      <li lang="zh-CN">我们不发营销邮件。</li>
+      <li lang="en">We send no marketing mail.</li>
+    </ul>
+
+    <p class="small" lang="zh-CN">本页更新于 2026-07-16。若承诺有实质变更,会在本页明示。</p>
+    <p class="small" lang="en">Last updated 2026-07-16. Material changes to these promises will be stated on this page.</p>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© 2026 Scrollery</span>
+      <span class="foot-links">
+        <a href="mailto:contact@scrollery.app">contact@scrollery.app</a>
+        <a href="https://github.com/gfgjs/scrollery" rel="noopener">GitHub</a>
+        <a href="/faq">FAQ</a>
+        <a href="/privacy"><span lang="zh-CN">隐私承诺</span><span lang="en">Privacy</span></a>
+      </span>
+    </div>
+    <p class="foot-legal">
+      <span lang="zh-CN">「Scrollery」名称与「卷」印标识为商标,不在核心代码 Apache-2.0 授权范围内(详见仓库 <a href="https://github.com/gfgjs/scrollery/blob/main/TRADEMARK.md" rel="noopener">TRADEMARK.md</a>)。本站不使用 Cookie,亦无任何跟踪脚本。</span>
+      <span lang="en">The “Scrollery” name and the seal mark are trademarks, not covered by the core's Apache-2.0 license (see <a href="https://github.com/gfgjs/scrollery/blob/main/TRADEMARK.md" rel="noopener">TRADEMARK.md</a>). This site sets no cookies and runs no trackers.</span>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
